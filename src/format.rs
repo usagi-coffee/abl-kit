@@ -7,8 +7,12 @@ extern "C" {
 }
 
 pub fn fix(file: &String) {
-    let wd = std::env::current_dir().unwrap();
+    if file.starts_with("/") {
+        fix_file(Path::new(file));
+        return;
+    }
 
+    let wd = std::env::current_dir().unwrap();
     fix_file(wd.join(file).as_path());
 }
 
