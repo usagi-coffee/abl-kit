@@ -1,20 +1,7 @@
-use tree_sitter::{Language, Parser, TreeCursor};
+use crate::parser;
 
+use tree_sitter::TreeCursor;
 use std::path::Path;
-
-extern "C" {
-    fn tree_sitter_abl() -> Language;
-}
-
-pub fn fix(file: &String) {
-    if file.starts_with("/") {
-        fix_file(Path::new(file));
-        return;
-    }
-
-    let wd = std::env::current_dir().unwrap();
-    fix_file(wd.join(file).as_path());
-}
 
 struct State {
     indentation_level: usize,
@@ -45,11 +32,18 @@ const INDENTATED_STATEMENTS: [&'static str; 17] = [
 
 const EXTENDED_STATEMENTS: [&'static str; 2] = ["else_do_statement", "else_do_if_statement"];
 
-pub fn fix_file(file: &Path) {
-    let mut parser = Parser::new();
+pub fn fix(file: &String) {
+    if file.starts_with("/") {
+        fix_file(Path::new(file));
+        return;
+    }
 
-    let language = unsafe { tree_sitter_abl() };
-    parser.set_language(language).unwrap();
+    let wd = std::env::current_dir().unwrap();
+    fix_file(wd.join(file).as_path());
+}
+
+pub fn fix_file(file: &Path) {
+    let mut parser = parser::setup();
 
     let source_code = std::fs::read_to_string(file).unwrap();
     let tree = parser.parse(&source_code, None).unwrap();

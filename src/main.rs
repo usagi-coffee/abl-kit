@@ -1,5 +1,6 @@
 use clap::{Arg, Command};
 
+pub mod parser;
 pub mod format;
 
 fn cli() -> Command {
@@ -20,8 +21,8 @@ fn main() {
     match matches.subcommand() {
         Some(("fix", args)) => match args.get_one::<String>("file") {
             Some(file) => format::fix(file),
-            None => println!("File was not provided!"),
+            None => panic!("File was not provided!"),
         },
-        _ => unreachable!(),
+        _ => panic!("Unknown command"),
     }
 }
