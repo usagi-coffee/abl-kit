@@ -65,11 +65,18 @@ pub fn fix_file(file: &Path) {
     traverse_tree(&mut cursor, &mut state);
 
     let mut output = String::new();
+    let mut was_empty = false;
 
     for (index, line) in source_code.lines().enumerate() {
+        if was_empty && line.trim().is_empty() {
+            continue;
+        }
+
         output.push_str(&" ".repeat(state.indentations[index] * TAB_SPACES));
         output.push_str(line.trim());
         output.push_str("\n");
+
+        was_empty = line.trim().is_empty();
     }
 
     if output.len() < 1 {
