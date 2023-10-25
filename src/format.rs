@@ -102,24 +102,10 @@ fn traverse_tree(cursor: &mut TreeCursor, state: &mut State) {
                 }
             }
 
-            println!(
-                "{} {:?} {:?}",
-                node.kind(),
-                node.start_position(),
-                node.end_position()
-            );
-
             let mut root = state.indentation_level.clone();
             if !EXTENDED_STATEMENTS.contains(&node.kind()) {
                 state.indentation_level += 1;
             }
-
-            println!(
-                "indentating {} from {} to {}",
-                state.indentation_level,
-                start + 1,
-                end + 1
-            );
 
             for i in start + 1..end {
                 state.indentations[i] = state.indentation_level;
