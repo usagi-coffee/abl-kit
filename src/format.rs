@@ -23,15 +23,23 @@ struct State {
 
 const TAB_SPACES: usize = 2;
 
-const INDENTATED_STATEMENTS: [&'static str; 7] = [
+const INDENTATED_STATEMENTS: [&'static str; 13] = [
     "if_statement",
     "if_do_statement",
+    "else_do_statement",
+    "else_do_if_statement",
     "loop_statement",
     "function_statement",
     "procedure_statement",
     "transaction_statement",
     "for_statement",
+    "find_statement",
+    "case_statement",
+    "assign_statement",
+    "abl_statement",
 ];
+
+const EXTENDED_STATEMENTS: [&'static str; 2] = ["else_do_statement", "else_do_if_statement"];
 
 pub fn fix_file(file: &Path) {
     let mut parser = Parser::new();
@@ -64,15 +72,31 @@ pub fn fix_file(file: &Path) {
         output.push_str("\n");
     }
 
+    if output.len() < 1 {
+        panic!("Output is empty! Not writing to file");
+    }
+
     std::fs::write(file, output).expect("Failed to write to file");
 }
 
 fn traverse_tree(cursor: &mut TreeCursor, state: &mut State) {
     for node in cursor.node().children(cursor) {
         let start = node.start_position().row;
-        let end = node.end_position().row;
+        let mut end = node.end_position().row;
 
         if INDENTATED_STATEMENTS.contains(&node.kind()) {
+            if node.kind() == "abl_statement" && start == end {
+                continue;
+            }
+
+            // Find terminator
+            let mut cursor = node.walk();
+            for node in node.children(&mut cursor) {
+                if node.kind() == "END" {
+                    end = node.end_position().row;
+                }
+            }
+
             println!(
                 "{} {:?} {:?}",
                 node.kind(),
@@ -80,15 +104,31 @@ fn traverse_tree(cursor: &mut TreeCursor, state: &mut State) {
                 node.end_position()
             );
 
-            state.indentations[start] = state.indentation_level;
-            state.indentation_level += 1;
+            let mut root = state.indentation_level.clone();
+            if !EXTENDED_STATEMENTS.contains(&node.kind()) {
+                state.indentation_level += 1;
+            }
+
+            println!(
+                "indentating {} from {} to {}",
+                state.indentation_level,
+                start + 1,
+                end + 1
+            );
 
             for i in start + 1..end {
                 state.indentations[i] = state.indentation_level;
             }
 
             traverse_tree(&mut node.walk(), state);
-            state.indentation_level -= 1;
+
+            if EXTENDED_STATEMENTS.contains(&node.kind()) {
+                root -= 1;
+            } else {
+                state.indentation_level -= 1;
+            }
+
+            state.indentations[end] = root;
         } else {
             traverse_tree(&mut node.walk(), state);
         }
