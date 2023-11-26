@@ -1,7 +1,7 @@
 use clap::{Arg, Command};
 
-pub mod parser;
 pub mod format;
+pub mod parser;
 
 fn cli() -> Command {
     Command::new("abl-kit")
@@ -20,7 +20,7 @@ fn main() {
 
     match matches.subcommand() {
         Some(("fix", args)) => match args.get_one::<String>("file") {
-            Some(file) => format::fix(file),
+            Some(file) => format::fix_file(file),
             None => panic!("File was not provided!"),
         },
         _ => panic!("Unknown command"),

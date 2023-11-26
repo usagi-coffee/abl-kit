@@ -32,21 +32,24 @@ const INDENTATED_STATEMENTS: [&'static str; 17] = [
 
 const EXTENDED_STATEMENTS: [&'static str; 2] = ["else_do_statement", "else_do_if_statement"];
 
-pub fn fix(file: &String) {
+pub fn fix_file(file: &String) {
+    let source: String;
+
     if file.starts_with("/") {
-        fix_file(Path::new(file));
-        return;
+        source = std::fs::read_to_string(Path::new(file)).unwrap();
+    } else {
+        let wd = std::env::current_dir().unwrap();
+        source = std::fs::read_to_string(wd.join(file).as_path()).unwrap();
     }
 
-    let wd = std::env::current_dir().unwrap();
-    fix_file(wd.join(file).as_path());
+    let output = fix(&source);
+    std::fs::write(file, output).expect("Failed to write to file");
 }
 
-pub fn fix_file(file: &Path) {
+pub fn fix(source: &String) -> String {
     let mut parser = parser::setup();
 
-    let source_code = std::fs::read_to_string(file).unwrap();
-    let tree = parser.parse(&source_code, None).unwrap();
+    let tree = parser.parse(&source, None).unwrap();
 
     let mut state = State {
         indentation_level: 0,
@@ -54,7 +57,7 @@ pub fn fix_file(file: &Path) {
     };
 
     // Fill all lines as zero indentation
-    for _ in source_code.lines() {
+    for _ in source.lines() {
         state.indentations.push(0);
     }
 
@@ -65,7 +68,7 @@ pub fn fix_file(file: &Path) {
     let mut output = String::new();
     let mut was_empty = false;
 
-    for (index, line) in source_code.lines().enumerate() {
+    for (index, line) in source.lines().enumerate() {
         if was_empty && line.trim().is_empty() {
             continue;
         }
@@ -81,7 +84,7 @@ pub fn fix_file(file: &Path) {
         panic!("Output is empty! Not writing to file");
     }
 
-    std::fs::write(file, output).expect("Failed to write to file");
+    output
 }
 
 fn traverse_tree(cursor: &mut TreeCursor, state: &mut State) {
