@@ -10,12 +10,10 @@ struct State {
 
 const TAB_SPACES: usize = 2;
 
-const INDENTATED_STATEMENTS: [&'static str; 20] = [
+const INDENTATED_STATEMENTS: [&'static str; 18] = [
     "if_statement",
-    "if_do_statement",
-    "else_do_statement",
-    "else_do_if_statement",
-    "else_then_statement",
+    "else_if_statement",
+    "else_statement",
     "loop_statement",
     "do_statement",
     "repeat_statement",
@@ -33,7 +31,7 @@ const INDENTATED_STATEMENTS: [&'static str; 20] = [
     "include"
 ];
 
-const EXTENDED_STATEMENTS: [&'static str; 2] = ["else_do_statement", "else_do_if_statement"];
+const EXTENDED_STATEMENTS: [&'static str; 2] = ["else_statement", "else_if_statement"];
 
 pub fn fix_file(file: &String) {
     let source: String;
