@@ -1,11 +1,11 @@
 use crate::parser;
 use tree_sitter::{InputEdit, TreeCursor};
 
-const KEYWORDS: &'static [u8] = include_bytes!("../../data/keywords.txt");
+const KEYWORDS: &'static str = include_str!("../../data/keywords.txt");
 
 // Could be refactored into macro but whatever
 fn keywords() -> Vec<&'static str> {
-    std::str::from_utf8(KEYWORDS).unwrap().lines().collect()
+    KEYWORDS.lines().collect()
 }
 
 pub fn transform(source: &String) -> String {
