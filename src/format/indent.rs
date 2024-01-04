@@ -8,10 +8,7 @@ struct State {
 
 const TAB_SPACES: usize = 2;
 
-const INDENTATED_STATEMENTS: [&'static str; 18] = [
-    "if_statement",
-    "else_if_statement",
-    "else_statement",
+const INDENTATED_STATEMENTS: [&'static str; 15] = [
     "loop_statement",
     "do_statement",
     "repeat_statement",
