@@ -1,5 +1,5 @@
 use crate::parser;
-use tree_sitter::{InputEdit, TreeCursor};
+use tree_sitter::TreeCursor;
 
 const KEYWORDS: &'static str = include_str!("../../data/keywords.txt");
 
@@ -14,7 +14,9 @@ pub fn transform(source: &String) -> String {
     let mut output = source.clone();
 
     loop {
-        let tree = parser.parse(&output, None).expect("Failed to parse the file");
+        let tree = parser
+            .parse(&output, None)
+            .expect("Failed to parse the file");
         let mut cursor = tree.walk();
 
         if traverse_tree(&mut cursor, &mut output) {
@@ -26,7 +28,7 @@ pub fn transform(source: &String) -> String {
 }
 
 fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) -> bool {
-    for mut node in cursor.node().children(cursor) {
+    for node in cursor.node().children(cursor) {
         // Uppercase
         if keywords().contains(&node.kind()) {
             let range = node.range();
@@ -38,36 +40,6 @@ fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) -> bool {
             );
 
             // We don't need to rebuild tree as the change does not change the length of the output
-        }
-
-        // Add NO-UNDO
-        if node.kind() == "variable_definition" {
-            let mut has_no_undo = false;
-            for child in node.named_children(&mut node.walk()) {
-
-                if child.kind() == "variable_tuning" && child.child(0).unwrap().kind() == "NO-UNDO"
-                {
-                    has_no_undo = true;
-                }
-            }
-
-            if !has_no_undo {
-                let range = node.range();
-                let type_node = node.child_by_field_name("type").expect("Variable definition does not have type definition");
-
-                source.insert_str(type_node.end_byte(), " NO-UNDO");
-
-                node.edit(&InputEdit {
-                    start_byte: range.start_byte,
-                    old_end_byte: range.end_byte,
-                    new_end_byte: range.end_byte + 8,
-                    start_position: range.start_point,
-                    old_end_position: range.end_point,
-                    new_end_position: node.end_position(),
-                });
-
-                return false;
-            }
         }
 
         traverse_tree(&mut node.walk(), source);

@@ -1,5 +1,6 @@
 use std::path::Path;
 
+mod defaults;
 mod indent;
 mod style;
 
@@ -15,6 +16,7 @@ pub fn fix_file(file: &String) {
 
     let mut output;
     output = indent::transform(&source);
+    output = defaults::transform(&output);
     output = style::transform(&output);
 
     std::fs::write(file, output).expect("Failed to write to file");
