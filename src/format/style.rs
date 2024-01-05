@@ -42,7 +42,9 @@ fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) -> bool {
             // We don't need to rebuild tree as the change does not change the length of the output
         }
 
-        traverse_tree(&mut node.walk(), source);
+        if !traverse_tree(&mut node.walk(), source) {
+            return false;
+        }
     }
 
     true

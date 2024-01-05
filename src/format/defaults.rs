@@ -36,13 +36,16 @@ fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) -> bool {
                 let type_node = node
                     .child_by_field_name("type")
                     .expect("Variable definition does not have type definition");
+                println!("{:?}", type_node.range());
 
                 source.insert_str(type_node.end_byte(), " NO-UNDO");
                 return false;
             }
         }
 
-        traverse_tree(&mut node.walk(), source);
+        if !traverse_tree(&mut node.walk(), source) {
+            return false;
+        }
     }
 
     true
