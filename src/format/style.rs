@@ -13,18 +13,23 @@ pub fn transform(source: &String) -> String {
 
     let mut output = source.clone();
 
-    let tree = parser.parse(&output, None).unwrap();
-    let mut cursor = tree.walk();
+    loop {
+        let tree = parser.parse(&output, None).expect("Failed to parse the file");
+        let mut cursor = tree.walk();
 
-    traverse_tree(&mut cursor, &mut output);
+        if traverse_tree(&mut cursor, &mut output) {
+            break;
+        }
+    }
+
     output
 }
 
-fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) {
+fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) -> bool {
     for mut node in cursor.node().children(cursor) {
+        // Uppercase
         if keywords().contains(&node.kind()) {
             let range = node.range();
-
             source.replace_range(
                 range.start_byte..range.end_byte,
                 source[range.start_byte..range.end_byte]
@@ -32,19 +37,41 @@ fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) {
                     .as_str(),
             );
 
-            let edit = InputEdit {
-                start_byte: range.start_byte,
-                old_end_byte: range.end_byte,
-                new_end_byte: range.start_byte + &node.kind().len() + 4,
-                start_position: range.start_point,
-                old_end_position: range.end_point,
-                new_end_position: node.end_position(),
-            };
+            // We don't need to rebuild tree as the change does not change the length of the output
+        }
 
-            node.edit(&edit);
+        // Add NO-UNDO
+        if node.kind() == "variable_definition" {
+            let mut has_no_undo = false;
+            for child in node.named_children(&mut node.walk()) {
+
+                if child.kind() == "variable_tuning" && child.child(0).unwrap().kind() == "NO-UNDO"
+                {
+                    has_no_undo = true;
+                }
+            }
+
+            if !has_no_undo {
+                let range = node.range();
+                let type_node = node.child_by_field_name("type").expect("Variable definition does not have type definition");
+
+                source.insert_str(type_node.end_byte(), " NO-UNDO");
+
+                node.edit(&InputEdit {
+                    start_byte: range.start_byte,
+                    old_end_byte: range.end_byte,
+                    new_end_byte: range.end_byte + 8,
+                    start_position: range.start_point,
+                    old_end_position: range.end_point,
+                    new_end_position: node.end_position(),
+                });
+
+                return false;
+            }
         }
 
         traverse_tree(&mut node.walk(), source);
     }
-}
 
+    true
+}
