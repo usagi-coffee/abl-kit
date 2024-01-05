@@ -1,5 +1,5 @@
 use crate::parser;
-use tree_sitter::{InputEdit, TreeCursor};
+use tree_sitter::TreeCursor;
 
 pub fn transform(source: &String) -> String {
     let mut parser = parser::setup();
@@ -21,7 +21,7 @@ pub fn transform(source: &String) -> String {
 }
 
 fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) -> bool {
-    for mut node in cursor.node().children(cursor) {
+    for node in cursor.node().children(cursor) {
         // Add NO-UNDO
         if node.kind() == "variable_definition" {
             let mut has_no_undo = false;
@@ -33,22 +33,11 @@ fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) -> bool {
             }
 
             if !has_no_undo {
-                let range = node.range();
                 let type_node = node
                     .child_by_field_name("type")
                     .expect("Variable definition does not have type definition");
 
                 source.insert_str(type_node.end_byte(), " NO-UNDO");
-
-                node.edit(&InputEdit {
-                    start_byte: range.start_byte,
-                    old_end_byte: range.end_byte,
-                    new_end_byte: range.end_byte + 8,
-                    start_position: range.start_point,
-                    old_end_position: range.end_point,
-                    new_end_position: node.end_position(),
-                });
-
                 return false;
             }
         }
