@@ -70,6 +70,10 @@ pub fn transform(source: &String) -> String {
 
 fn traverse_tree(cursor: &mut TreeCursor, state: &mut State) {
     for node in cursor.node().children(cursor) {
+        if node.is_error() {
+            continue;
+        }
+
         let start = node.start_position().row;
         let mut end = node.end_position().row;
 

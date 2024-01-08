@@ -22,6 +22,10 @@ pub fn transform(source: &String) -> String {
 
 fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) -> bool {
     for node in cursor.node().children(cursor) {
+        if node.is_error() {
+            continue;
+        }
+
         // Add NO-UNDO
         if node.kind() == "variable_definition" {
             let mut has_no_undo = false;

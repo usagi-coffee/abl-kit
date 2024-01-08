@@ -29,6 +29,10 @@ pub fn transform(source: &String) -> String {
 
 fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) -> bool {
     for node in cursor.node().children(cursor) {
+        if node.is_error() {
+            continue;
+        }
+
         // Uppercase
         if keywords().contains(&node.kind()) {
             let range = node.range();
