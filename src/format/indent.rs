@@ -8,7 +8,7 @@ struct State {
 
 const TAB_SPACES: usize = 2;
 
-const INDENTATED_STATEMENTS: [&'static str; 16] = [
+const INDENTATED_STATEMENTS: [&'static str; 17] = [
     "loop_statement",
     "do_statement",
     "do_while_statement",
@@ -22,6 +22,7 @@ const INDENTATED_STATEMENTS: [&'static str; 16] = [
     "assign_statement",
     "catch_statement",
     "finally_statement",
+    "temp_table_definition",
     "abl_statement",
     "do_block",
     "include",
