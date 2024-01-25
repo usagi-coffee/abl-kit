@@ -41,7 +41,7 @@ fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) -> bool {
 
                 target_node = node.child_by_field_name("type");
                 if target_node.is_none() {
-                    target_node = node.child_by_field_name("type");
+                    target_node = node.child_by_field_name("like");
                 }
 
                 if target_node.is_none() {
