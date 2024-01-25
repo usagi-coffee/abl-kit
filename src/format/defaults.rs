@@ -37,12 +37,22 @@ fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) -> bool {
             }
 
             if !has_no_undo {
-                let type_node = node
-                    .child_by_field_name("type")
-                    .expect("Variable definition does not have type definition");
-                println!("{:?}", type_node.range());
+                let mut target_node;
 
-                source.insert_str(type_node.end_byte(), " NO-UNDO");
+                target_node = node.child_by_field_name("type");
+                if target_node.is_none() {
+                    target_node = node.child_by_field_name("type");
+                }
+
+                if target_node.is_none() {
+                    panic!("Variable definition does not have type definition");
+                }
+
+                let target_node = target_node.unwrap();
+
+                println!("{:?}", target_node.range());
+
+                source.insert_str(target_node.end_byte(), " NO-UNDO");
                 return false;
             }
         }
