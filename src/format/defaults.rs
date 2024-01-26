@@ -50,8 +50,6 @@ fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) -> bool {
 
                 let target_node = target_node.unwrap();
 
-                println!("{:?}", target_node.range());
-
                 source.insert_str(target_node.end_byte(), " NO-UNDO");
                 return false;
             }
