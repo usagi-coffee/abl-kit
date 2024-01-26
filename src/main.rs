@@ -1,5 +1,6 @@
 use clap::{Arg, Command};
 
+pub mod browse;
 pub mod format;
 pub mod parser;
 
@@ -13,6 +14,7 @@ fn cli() -> Command {
                 .about("Fixes indentations in the file(s)")
                 .arg(Arg::new("file")),
         )
+        .subcommand(Command::new("browse").about("Query the database"))
 }
 
 fn main() {
@@ -23,6 +25,7 @@ fn main() {
             Some(file) => format::fix_file(file),
             None => panic!("File was not provided!"),
         },
+        Some(("browse", _)) => browse::run().expect("Browse crashed"),
         _ => panic!("Unknown command"),
     }
 }

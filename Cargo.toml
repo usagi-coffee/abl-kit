@@ -7,6 +7,8 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.2.5" }
+crossterm = "0.27.0"
+ratatui = "0.25.0"
 tree-sitter = "0.20.10"
 
 [build-dependencies]
