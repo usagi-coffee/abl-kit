@@ -3,18 +3,19 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
     ExecutableCommand,
 };
+use std::error::Error;
 
 use ratatui::{
     prelude::*,
     widgets::{Block, Borders, Paragraph},
 };
-use std::io::{stdout, Result};
+use std::io::stdout;
 
 struct Field {
     name: String,
 }
 
-pub fn run() -> Result<()> {
+pub fn run() -> Result<(), Box<dyn Error>> {
     stdout().execute(EnterAlternateScreen)?;
     enable_raw_mode()?;
     let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;

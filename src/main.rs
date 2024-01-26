@@ -22,7 +22,7 @@ fn main() {
 
     match matches.subcommand() {
         Some(("fix", args)) => match args.get_one::<String>("file") {
-            Some(file) => format::fix_file(file),
+            Some(file) => format::fix_file(file).expect("Failed to fix file"),
             None => panic!("File was not provided!"),
         },
         Some(("browse", _)) => browse::run().expect("Browse crashed"),
