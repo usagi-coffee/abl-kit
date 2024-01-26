@@ -27,6 +27,12 @@ const INDENTATED_STATEMENTS: [&'static str; 17] = [
     "do_block",
     "include",
 ];
+const ABL_STATEMENTS: [&'static str; 4] = [
+    "temp_table_definition",
+    "abl_statement",
+    "for_statement",
+    "find_statement",
+];
 const EXTENDED_STATEMENTS: [&'static str; 2] = ["else_statement", "else_if_statement"];
 
 pub fn transform(source: &String) -> String {
@@ -97,7 +103,7 @@ fn traverse_tree(cursor: &mut TreeCursor, state: &mut State) {
                 state.indentation_level += 1;
             }
 
-            for i in start + 1..end {
+            for i in start + 1..=end {
                 state.indentations[i] = state.indentation_level;
             }
 
@@ -109,7 +115,9 @@ fn traverse_tree(cursor: &mut TreeCursor, state: &mut State) {
                 state.indentation_level -= 1;
             }
 
-            state.indentations[end] = root;
+            if !ABL_STATEMENTS.contains(&node.kind()) {
+                state.indentations[end] = root;
+            }
         } else {
             traverse_tree(&mut node.walk(), state);
         }
