@@ -9,30 +9,28 @@ struct State {
 const TAB_SPACES: usize = 2;
 
 const INDENTATED_STATEMENTS: [&'static str; 17] = [
-    "loop_statement",
-    "do_statement",
-    "do_while_statement",
-    "repeat_statement",
+    "include",
+    "do_block",
     "function_statement",
     "procedure_statement",
-    "transaction_statement",
+    "loop_statement",
+    "repeat_statement",
+    "do_statement",
+    "do_while_statement",
     "for_statement",
     "find_statement",
     "case_statement",
     "assign_statement",
     "catch_statement",
     "finally_statement",
-    "temp_table_definition",
     "abl_statement",
-    "do_block",
-    "include",
-];
-const ABL_STATEMENTS: [&'static str; 4] = [
+    "transaction_statement",
     "temp_table_definition",
-    "abl_statement",
-    "for_statement",
-    "find_statement",
 ];
+
+// DO NOT PUT END TERMINATED STATEMENTS HERE
+const ABL_STATEMENTS: [&'static str; 3] =
+    ["temp_table_definition", "abl_statement", "find_statement"];
 const EXTENDED_STATEMENTS: [&'static str; 2] = ["else_statement", "else_if_statement"];
 
 pub fn transform(source: &String) -> String {
