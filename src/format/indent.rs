@@ -80,12 +80,18 @@ fn traverse_tree(cursor: &mut TreeCursor, state: &mut State) {
             continue;
         }
 
-        let start = node.start_position().row;
+        let mut start = node.start_position().row;
         let mut end = node.end_position().row;
 
         if INDENTATED_STATEMENTS.contains(&node.kind()) {
             if node.kind() == "abl_statement" && start == end {
                 continue;
+            }
+
+            // Find start
+            // DO: at the root
+            if node.kind() == "do_block" {
+                start = std::cmp::max(start, node.named_child(0).unwrap().start_position().row - 1);
             }
 
             // Find terminator
