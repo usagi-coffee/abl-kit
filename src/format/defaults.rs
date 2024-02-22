@@ -2,7 +2,7 @@ use crate::parser;
 use tree_sitter::TreeCursor;
 
 pub fn transform(source: &String) -> String {
-    let mut parser = parser::setup();
+    let mut parser = parser::setup_abl();
 
     let mut output = source.clone();
 

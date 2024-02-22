@@ -34,7 +34,7 @@ const ABL_STATEMENTS: [&'static str; 3] =
 const EXTENDED_STATEMENTS: [&'static str; 2] = ["else_statement", "else_if_statement"];
 
 pub fn transform(source: &String) -> String {
-    let mut parser = parser::setup();
+    let mut parser = parser::setup_abl();
 
     let tree = parser.parse(&source, None).unwrap();
 

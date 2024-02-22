@@ -9,7 +9,7 @@ fn keywords() -> Vec<&'static str> {
 }
 
 pub fn transform(source: &String) -> String {
-    let mut parser = parser::setup();
+    let mut parser = parser::setup_abl();
 
     let mut output = source.clone();
 
@@ -33,6 +33,7 @@ fn traverse_tree(cursor: &mut TreeCursor, source: &mut String) -> bool {
             continue;
         }
 
+        println!("{}", &node.kind());
         // Uppercase
         if keywords().contains(&node.kind()) {
             let range = node.range();

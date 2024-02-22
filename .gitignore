@@ -2,5 +2,6 @@ b.p
 example.p
 target/
 tree-sitter-abl
+tree-sitter-df
 .vscode
 

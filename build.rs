@@ -1,12 +1,20 @@
 use std::path::PathBuf;
 
 fn main() {
-    let dir: PathBuf = ["tree-sitter-abl", "src"].iter().collect();
+    let abl_dir: PathBuf = ["tree-sitter-abl", "src"].iter().collect();
+    let df_dir: PathBuf = ["tree-sitter-df", "src"].iter().collect();
 
     cc::Build::new()
-        .include(&dir)
-        .file(dir.join("parser.c"))
-        .file(dir.join("scanner.c"))
+        .include(&abl_dir)
+        .file(abl_dir.join("parser.c"))
+        .file(abl_dir.join("scanner.c"))
         .warnings(false)
         .compile("tree-sitter-abl");
+
+    cc::Build::new()
+        .include(&df_dir)
+        .file(df_dir.join("parser.c"))
+        .file(df_dir.join("scanner.c"))
+        .warnings(false)
+        .compile("tree-sitter-df");
 }
