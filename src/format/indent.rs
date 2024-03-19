@@ -29,8 +29,8 @@ const INDENTATED_STATEMENTS: [&'static str; 17] = [
 ];
 
 // DO NOT PUT END TERMINATED STATEMENTS HERE
-const ABL_STATEMENTS: [&'static str; 3] =
-    ["temp_table_definition", "abl_statement", "find_statement"];
+const ABL_STATEMENTS: [&'static str; 4] =
+    ["temp_table_definition", "abl_statement", "assign_statement", "find_statement"];
 const EXTENDED_STATEMENTS: [&'static str; 2] = ["else_statement", "else_if_statement"];
 
 pub fn transform(source: &String) -> String {
