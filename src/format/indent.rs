@@ -8,7 +8,7 @@ struct State {
 
 const TAB_SPACES: usize = 2;
 
-const INDENTATED_STATEMENTS: [&'static str; 17] = [
+const INDENTATED_STATEMENTS: [&'static str; 18] = [
     "include",
     "do_block",
     "function_statement",
@@ -21,6 +21,7 @@ const INDENTATED_STATEMENTS: [&'static str; 17] = [
     "find_statement",
     "case_statement",
     "assign_statement",
+    "variable_assignment",
     "catch_statement",
     "finally_statement",
     "abl_statement",
@@ -29,8 +30,11 @@ const INDENTATED_STATEMENTS: [&'static str; 17] = [
 ];
 
 // DO NOT PUT END TERMINATED STATEMENTS HERE
-const ABL_STATEMENTS: [&'static str; 4] =
-    ["temp_table_definition", "abl_statement", "assign_statement", "find_statement"];
+const ABL_STATEMENTS: [&'static str; 5] =
+    ["temp_table_definition", "abl_statement", "assign_statement", "find_statement",
+
+    "variable_assignment",
+    ];
 const EXTENDED_STATEMENTS: [&'static str; 2] = ["else_statement", "else_if_statement"];
 
 pub fn transform(source: &String) -> String {
