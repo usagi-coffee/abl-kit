@@ -5,6 +5,8 @@ use std::path::Path;
 
 use encoding_rs::WINDOWS_1250;
 
+mod extract;
+
 pub fn universal_read(path: &String) -> Result<(String, bool), Box<dyn Error>> {
     let mut file;
     let mut is_win1250: bool = false;
@@ -37,4 +39,10 @@ pub fn strip_quotes(string: &str) -> String {
         .skip(1)
         .take(string.len() - 2)
         .collect::<String>()
+}
+
+pub fn extract(path: &String, tag: String) -> Result<Option<String>, Box<dyn Error>> {
+    let (source, _is_win1250) = universal_read(path)?;
+
+    Ok(extract::extract_tag(&source, tag))
 }
