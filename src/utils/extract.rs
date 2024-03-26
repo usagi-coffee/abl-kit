@@ -24,13 +24,13 @@ fn traverse_tree(cursor: &mut TreeCursor, source: &mut String, tag: String) -> O
             let text = &source[range.start_byte..range.end_byte];
 
             // Ensure tag is found
-            let tag_index = text.find(&format!("@{}", tag))?;
+            if let Some(tag_index) = text.find(&format!("@{}", tag)) {
+                let start_index = text.find('{')?;
+                let end_index = text.find('}')?;
 
-            let start_index = text.find('{')?;
-            let end_index = text.find('}')?;
-
-            if tag_index < start_index && end_index > start_index {
-                return Some(text[start_index + 1..end_index].to_string());
+                if tag_index < start_index && end_index > start_index {
+                    return Some(text[start_index + 1..end_index].to_string());
+                }
             }
         }
     }
